@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Komikos Voting Portal</title>
+    <style>
+        /* --- CSS STYLES --- */
+        :root {
+            --primary: #FF7E5F; 
+            --secondary: #FEB47B; 
+            --bg-gradient-start: #4b2c35;
+            --bg-gradient-end: #2c2a35;
+            --text-light: #ffffff;
+            --modal-bg: #3e3b47;
+            --danger: #ff4757;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Login Overlay (Site Gatekeeper) */
+        #site-login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            z-index: 9999; /* Highest priority */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        /* Top Right Corner Controls */
+        .top-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            text-align: right;
+        }
+
+        .vote-count-badge {
+            background-color: var(--primary);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .btn-results {
+            display: block;
+            background: transparent;
+            border: 2px solid var(--secondary);
+            color: var(--secondary);
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-left: auto;
+        }
+
+        .btn-results:hover {
+            background: var(--secondary);
+            color: #fff;
+        }
+
+        /* Main Container */
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            width: 90%;
+            max-width: 350px;
+        }
+
+        h1 {
+            color: var(--secondary);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 2rem;
+        }
+        
+        h3 {
+            font-weight: 300;
+            margin-top: 0;
+            opacity: 0.8;
+            font-size: 1rem;
+            color: var(--primary);
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        
+        input:focus {
+            outline: 2px solid var(--primary);
+        }
+
+        .btn-main {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border: none;
+            padding: 12px 30px;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(255, 126, 95, 0.4);
+            transition: transform 0.2s;
+        }
+
+        .btn-main:active {
+            transform: scale(0.98);
+        }
+
+        .btn-reset {
+            background: transparent;
+            border: none;
+            color: #aaa;
+            font-size: 0.8rem;
+            margin-top: 20px;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .btn-manage {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ddd;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-top: 15px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .btn-manage:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--modal-bg);
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .candidate-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .candidate-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .candidate-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .candidate-item.selected {
+            border-color: var(--primary);
+            background: rgba(255, 126, 95, 0.1);
+        }
+
+        /* Management Specific Styles */
+        .manage-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 8px;
+        }
+
+        .btn-delete {
+            background: transparent;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 1.2rem;
+            margin-left: 10px;
+        }
+
+        .add-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn-add {
+            background: var(--secondary);
+            border: none;
+            border-radius: 8px;
+            color: #333;
+            font-weight: bold;
+            padding: 0 15px;
+            cursor: pointer;
+        }
+
+        .status-msg {
+            font-size: 0.9rem;
+            color: var(--secondary);
+            margin-bottom: 15px;
+            min-height: 1.2em;
+        }
+
+        /* Results Page */
+        #results-page {
+            display: none;
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .result-bar-container {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .result-bar-bg {
+            background: rgba(255,255,255,0.1);
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .result-bar-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 1s ease-in-out;
+        }
+
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+            z-index: 2000;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="site-login-overlay">
+        <div class="container">
+            <h1>KÖMIKOS</h1>
+            <h3>Event Access</h3>
+            <p style="margin-bottom: 20px; font-size: 0.9rem; opacity: 0.8;">Please enter the password to continue.</p>
+            <input type="password" id="site-password" placeholder="Password">
+            <button class="btn-main" onclick="checkSiteAccess()">Enter</button>
+            <div id="login-error" style="color: #ff6b6b; margin-top: 10px; font-size: 0.9rem;"></div>
+        </div>
+    </div>
+    <div id="loading">Connecting to Server...</div>
+
+    <div class="top-controls">
+        <div class="vote-count-badge">Total Votes: <span id="total-votes">...</span></div>
+        <button class="btn-results" onclick="showResults()">[Admin] Show Results</button>
+    </div>
+
+    <div class="container" id="voting-page">
+        <h1>KÖMIKOS</h1>
+        <h3>Site developed BY A MME GUY</h3>
+        
+        <input type="text" id="roll-input" placeholder="Enter Roll Number" autocomplete="off">
+        <button class="btn-main" onclick="openVoteModal()">Vote Now</button>
+        <div id="error-msg" style="color: #ff6b6b; margin-top: 10px; font-size: 0.9rem;"></div>
+        
+        <br>
+        <button class="btn-manage" onclick="openManageModal()">[Admin] Manage Candidates</button>
+        <br>
+        <button class="btn-reset" onclick="manualReset()">Reset All Votes</button>
+    </div>
+
+    <div class="container" id="results-page">
+        <h1>Current Standings</h1>
+        <div id="results-list" style="margin-top: 30px;">
+            </div>
+        <button class="btn-main" onclick="goBack()" style="margin-top: 20px;">Back to Voting</button>
+    </div>
+
+    <div class="modal-overlay" id="vote-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('vote-modal')">&times;</span>
+            <h2 id="modal-title" style="color:var(--secondary)">Select Candidate</h2>
+            <div class="status-msg" id="user-status"></div>
+            
+            <ul class="candidate-list" id="candidate-list-ui">
+                </ul>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="manage-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('manage-modal')">&times;</span>
+            <h2 style="color:var(--secondary)">Manage Candidates</h2>
+            <p style="color: var(--danger); font-size: 0.8rem; margin-top: -10px;">Warning: Changing candidates resets all votes.</p>
+            
+            <div class="add-group">
+                <input type="text" id="new-candidate-name" placeholder="New Name..." style="margin:0;">
+                <button class="btn-add" onclick="addCandidate()">ADD</button>
+            </div>
+
+            <div class="candidate-list" id="manage-list-ui">
+                </div>
+            
+            <button class="btn-main" onclick="closeModal('manage-modal')">Done</button>
+        </div>
+    </div>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import { getDatabase, ref, set, get, child, update, onValue, remove } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+        // TODO: Replace the following with your app's Firebase project configuration
+        const firebaseConfig = {
+  apiKey: "AIzaSyCAXmfQwtibbzfhvB3GpDPwQRIYq1hbGJg",
+  authDomain: "voting-nitt.firebaseapp.com",
+  databaseURL: "https://voting-nitt-default-rtdb.firebaseio.com",
+  projectId: "voting-nitt",
+  storageBucket: "voting-nitt.firebasestorage.app",
+  messagingSenderId: "283512747830",
+  appId: "1:283512747830:web:4b64effbf41193c0d46597",
+  measurementId: "G-Z0Q43GHRBJ"
+};
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // --- GLOBAL VARIABLES (Synced from DB) ---
+        let localVotes = {};
+        let localCandidates = [];
+        let fetchedSitePassword = "admin"; // Fallback until loaded
+        let currentRoll = "";
+
+        // --- DOM ELEMENTS ---
+        const voteModal = document.getElementById('vote-modal');
+        const manageModal = document.getElementById('manage-modal');
+        const rollInput = document.getElementById('roll-input');
+        const errorMsg = document.getElementById('error-msg');
+        const totalVotesEl = document.getElementById('total-votes');
+        const candidateListUI = document.getElementById('candidate-list-ui');
+        const manageListUI = document.getElementById('manage-list-ui');
+        const userStatus = document.getElementById('user-status');
+        const votingPage = document.getElementById('voting-page');
+        const resultsPage = document.getElementById('results-page');
+        const resultsList = document.getElementById('results-list');
+        const newCandidateInput = document.getElementById('new-candidate-name');
+        const loadingEl = document.getElementById('loading');
+        
+        // Site Access Elements
+        const loginOverlay = document.getElementById('site-login-overlay');
+        const sitePasswordInput = document.getElementById('site-password');
+        const loginError = document.getElementById('login-error');
+
+        // --- INITIALIZE PASSWORD FROM DB ---
+        // Fetch password once on load. If missing, set default.
+        get(ref(db, 'sitePassword')).then((snapshot) => {
+            if (snapshot.exists()) {
+                fetchedSitePassword = snapshot.val();
+                console.log("Password loaded from DB");
+            } else {
+                console.log("No password found, creating default 'admin'");
+                set(ref(db, 'sitePassword'), "admin");
+                fetchedSitePassword = "admin";
+            }
+        }).catch((error) => {
+            console.error("Error fetching password:", error);
+        });
+
+
+        // --- SITE ACCESS LOGIC ---
+        window.checkSiteAccess = function() {
+            const val = sitePasswordInput.value;
+            // Compare against the fetched variable
+            if(val === fetchedSitePassword) {
+                loginOverlay.style.display = "none";
+            } else {
+                loginError.textContent = "Incorrect Password";
+            }
+        }
+
+        // Allow pressing "Enter" key on password field
+        sitePasswordInput.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                window.checkSiteAccess();
+            }
+        });
+
+        // --- REALTIME LISTENERS ---
+
+        // Listen for Candidates
+        const candidatesRef = ref(db, 'candidates');
+        onValue(candidatesRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                // Convert object to array (Firebase stores arrays as objects with keys 0,1,2...)
+                localCandidates = Object.values(data);
+            } else {
+                localCandidates = [];
+            }
+        });
+
+        // Listen for Votes (Live count update)
+        const votesRef = ref(db, 'votes');
+        onValue(votesRef, (snapshot) => {
+            const data = snapshot.val();
+            localVotes = data || {};
+            updateTotalCount();
+        });
+
+        function updateTotalCount() {
+            const count = Object.keys(localVotes).length;
+            totalVotesEl.innerText = count;
+        }
+
+        // --- VOTING LOGIC ---
+
+        window.openVoteModal = function() {
+            const roll = rollInput.value.trim();
+            // Sanitize roll number
+            const safeRoll = roll.replace(/[.#$\[\]]/g, ""); 
+
+            if (!safeRoll) {
+                errorMsg.textContent = "Please enter a valid Roll Number.";
+                return;
+            }
+            
+            errorMsg.textContent = "";
+            currentRoll = safeRoll;
+
+            const existingVote = localVotes[currentRoll];
+
+            if (existingVote) {
+                document.getElementById('modal-title').innerText = "Change Your Vote";
+                const existingName = getCandidateName(existingVote);
+                userStatus.innerText = existingName ? `You previously voted for: ${existingName}` : "Your previous candidate was removed.";
+            } else {
+                document.getElementById('modal-title').innerText = "Cast Your Vote";
+                userStatus.innerText = "Select a candidate from the list below.";
+            }
+
+            renderVotingList(existingVote);
+            voteModal.style.display = "flex";
+        }
+
+        function renderVotingList(selectedCandidateId) {
+            candidateListUI.innerHTML = "";
+            
+            if(localCandidates.length === 0) {
+                candidateListUI.innerHTML = "<p style='opacity:0.6'>No candidates available yet.</p>";
+                return;
+            }
+
+            localCandidates.forEach(cand => {
+                const li = document.createElement('li');
+                li.className = `candidate-item ${selectedCandidateId === cand.id ? 'selected' : ''}`;
+                li.innerHTML = `<span>${cand.name}</span> ${selectedCandidateId === cand.id ? '✔' : ''}`;
+                li.onclick = () => castVote(cand.id);
+                candidateListUI.appendChild(li);
+            });
+        }
+
+        window.castVote = function(candidateId) {
+            loadingEl.style.display = "block";
+            set(ref(db, 'votes/' + currentRoll), candidateId)
+                .then(() => {
+                    loadingEl.style.display = "none";
+                    closeModal('vote-modal');
+                    rollInput.value = ""; 
+                    alert(`Vote cast successfully for ${getCandidateName(candidateId)}!`);
+                })
+                .catch((error) => {
+                    loadingEl.style.display = "none";
+                    alert("Error casting vote: " + error.message);
+                });
+        }
+
+        // --- MANAGEMENT LOGIC ---
+
+        window.openManageModal = function() {
+            const password = prompt("Enter Admin Password to Manage Candidates:");
+            if(password === fetchedSitePassword) {
+                renderManageList();
+                manageModal.style.display = "flex";
+            } else if (password !== null) {
+                alert("Incorrect Password!");
+            }
+        }
+
+        function renderManageList() {
+            manageListUI.innerHTML = "";
+            localCandidates.forEach((cand, index) => {
+                const div = document.createElement('div');
+                div.className = "manage-row";
+                div.innerHTML = `
+                    <span>${cand.name}</span>
+                    <button class="btn-delete" onclick="deleteCandidate(${index})">🗑️</button>
+                `;
+                manageListUI.appendChild(div);
+            });
+        }
+
+        window.addCandidate = function() {
+            const name = newCandidateInput.value.trim();
+            if(!name) return;
+
+            if(confirm(`Adding "${name}" will RESET ALL current votes. Are you sure?`)) {
+                const newId = Date.now();
+                const updatedList = [...localCandidates, { id: newId, name: name }];
+                updateCandidatesAndReset(updatedList);
+                newCandidateInput.value = "";
+            }
+        }
+
+        window.deleteCandidate = function(index) {
+            if(confirm("Deleting this candidate will RESET ALL current votes. Are you sure?")) {
+                const updatedList = [...localCandidates];
+                updatedList.splice(index, 1);
+                updateCandidatesAndReset(updatedList);
+            }
+        }
+
+        function updateCandidatesAndReset(newList) {
+            loadingEl.style.display = "block";
+            
+            // Perform simultaneous update: Set new Candidates AND set Votes to null
+            const updates = {};
+            updates['/candidates'] = newList;
+            updates['/votes'] = null; // This deletes the votes node
+
+            update(ref(db), updates)
+                .then(() => {
+                    loadingEl.style.display = "none";
+                    renderManageList(); 
+                })
+                .catch((error) => {
+                    loadingEl.style.display = "none";
+                    alert("Error updating database: " + error.message);
+                });
+        }
+
+        // --- UTILS & ADMIN ---
+
+        window.manualReset = function() {
+            const password = prompt("Enter Admin Password to Reset Votes:");
+
+            if (password === fetchedSitePassword) {
+                if(confirm("Are you sure you want to reset ALL votes? This cannot be undone.")) {
+                    loadingEl.style.display = "block";
+                    set(ref(db, 'votes'), null)
+                        .then(() => {
+                            loadingEl.style.display = "none";
+                            alert("All votes have been reset.");
+                        });
+                }
+            } else if (password !== null) {
+                alert("Incorrect Password!");
+            }
+        }
+
+        window.showResults = function() {
+            const password = prompt("Enter Admin Password to View Results:");
+
+            if (password === fetchedSitePassword) {
+                const tally = {};
+                localCandidates.forEach(c => tally[c.id] = 0);
+                
+                Object.values(localVotes).forEach(voteId => {
+                    if(tally[voteId] !== undefined) tally[voteId]++;
+                });
+
+                const total = Object.keys(localVotes).length;
+                
+                resultsList.innerHTML = "";
+                localCandidates.forEach(c => {
+                    const count = tally[c.id];
+                    const percentage = total === 0 ? 0 : Math.round((count / total) * 100);
+                    
+                    const html = `
+                        <div class="result-bar-container">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                                <strong>${c.name}</strong>
+                                <span>${count} votes (${percentage}%)</span>
+                            </div>
+                            <div class="result-bar-bg">
+                                <div class="result-bar-fill" style="width: ${percentage}%"></div>
+                            </div>
+                        </div>
+                    `;
+                    resultsList.innerHTML += html;
+                });
+
+                votingPage.style.display = "none";
+                resultsPage.style.display = "block";
+            
+            } else if (password !== null) {
+                alert("Incorrect Password!");
+            }
+        }
+
+        function getCandidateName(id) {
+            const cand = localCandidates.find(c => c.id === id);
+            return cand ? cand.name : null;
+        }
+
+        window.closeModal = function(modalId) {
+            document.getElementById(modalId).style.display = "none";
+        }
+
+        window.goBack = function() {
+            resultsPage.style.display = "none";
+            votingPage.style.display = "block";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == voteModal) closeModal('vote-modal');
+            if (event.target == manageModal) closeModal('manage-modal');
+        }
+
+    </script>
+</body>
+</html>
