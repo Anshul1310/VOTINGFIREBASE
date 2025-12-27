@@ -444,7 +444,7 @@
                     // --- 4. GENERATE OTP & SEND TO SERVER ---
                     generatedMockOtp = Math.floor(100000 + Math.random() * 900000).toString();
 
-                    fetch('http://localhost:3000/send-otp', {
+                    fetch('backend-vote-r97fwaz9h-anshul1310s-projects.vercel.app/send-otp', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
