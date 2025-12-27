@@ -9,17 +9,14 @@
     <style>
         :root {
             /* DARK MODE POP-ART PALETTE */
-            --bg-color: #1a1a2e; /* Deep Midnight Blue/Purple */
-            --card-bg: #eaeaea;  /* Off-white for panels to pop */
-            
+            --bg-color: #1a1a2e;
+            --card-bg: #eaeaea;
             --primary-orange: #ff6b6b;
             --accent-yellow: #feca57;
             --accent-blue: #54a0ff;
             --accent-purple: #5f27cd;
-            
-            --text-body: #f0f0f0; 
-            --text-card: #2d3436; 
-            
+            --text-body: #f0f0f0;
+            --text-card: #2d3436;
             --border-color: #000000;
             --hard-shadow: 6px 6px 0px #000000;
         }
@@ -30,8 +27,6 @@
             font-family: 'Public Sans', sans-serif;
             color: var(--text-body);
             background-color: var(--bg-color);
-            
-            /* Dark Halftone Pattern */
             background-image: radial-gradient(#ffffff 15%, transparent 16%),
                               radial-gradient(#ffffff 15%, transparent 16%);
             background-position: 0 0, 15px 15px;
@@ -41,6 +36,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            padding-bottom: 50px; /* Space for scrolling on mobile */
         }
 
         /* --- Header Styles --- */
@@ -54,11 +51,13 @@
             box-shadow: var(--hard-shadow);
             transform: rotate(-2deg);
             z-index: 10;
+            max-width: 90%; /* Responsive width */
+            box-sizing: border-box;
         }
 
         h1.theme-title {
             font-family: 'Bangers', cursive;
-            font-size: 5rem;
+            font-size: 5rem; /* Desktop size */
             margin: 0;
             color: var(--accent-yellow);
             -webkit-text-stroke: 2px var(--border-color);
@@ -75,16 +74,19 @@
             margin-bottom: 0;
             color: white;
             text-shadow: 2px 2px 0px var(--border-color);
+            font-size: 1.5rem;
         }
 
         /* --- Candidate Grid --- */
         .voting-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 50px; /* Increased gap for 2 candidates */
+            gap: 50px;
             justify-content: center;
+            width: 100%;
             max-width: 1100px;
-            padding: 40px 20px;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         .candidate-card {
@@ -93,11 +95,12 @@
             border: 3px solid var(--border-color);
             box-shadow: var(--hard-shadow);
             border-radius: 12px;
-            padding: 40px 25px; /* Bigger padding */
-            width: 300px; /* Wider cards since only 2 */
+            padding: 30px 20px;
+            width: 300px; /* Base width */
             text-align: center;
             position: relative;
             transition: all 0.2s ease;
+            flex-shrink: 0; /* Prevent squishing */
         }
 
         .candidate-card:hover {
@@ -124,10 +127,11 @@
 
         .candidate-name {
             font-family: 'Bangers', cursive;
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             color: var(--text-card);
             margin-bottom: 10px;
             line-height: 1.1;
+            word-wrap: break-word; /* Prevent long names breaking layout */
         }
 
         .vote-count {
@@ -147,13 +151,15 @@
             font-family: 'Public Sans', sans-serif;
             font-weight: 800;
             text-transform: uppercase;
-            font-size: 1.2rem;
-            padding: 15px 30px;
+            font-size: 1.1rem;
+            padding: 15px 20px;
             border: 3px solid var(--border-color);
             cursor: pointer;
             box-shadow: 4px 4px 0px var(--border-color);
             transition: all 0.1s;
             width: 100%;
+            white-space: normal; /* Allow text wrapping on button */
+            line-height: 1.2;
         }
 
         .vote-btn:active {
@@ -174,22 +180,25 @@
             justify-content: center;
             align-items: center;
             z-index: 100;
+            padding: 20px; /* Prevent touching edges on mobile */
+            box-sizing: border-box;
         }
 
         .modal-box {
             background: var(--accent-purple);
             color: white;
-            padding: 40px;
+            padding: 30px;
             border: 4px solid white;
             box-shadow: 0 0 20px rgba(95, 39, 205, 0.6); 
             text-align: center;
-            width: 90%;
-            max-width: 450px;
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
         }
 
         .modal-box h3 {
             font-family: 'Bangers', cursive;
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             color: var(--accent-yellow);
             -webkit-text-stroke: 1px black;
             text-shadow: 3px 3px 0px black;
@@ -210,27 +219,55 @@
             font-weight: bold;
         }
 
-        .modal-input:focus {
-            border-color: var(--accent-yellow);
-            box-shadow: 0 0 10px var(--accent-yellow);
+        /* --- MOBILE RESPONSIVENESS MEDIA QUERIES --- */
+        @media (max-width: 768px) {
+            .header-container {
+                margin-top: 30px;
+                padding: 15px 25px;
+            }
+            h1.theme-title {
+                font-size: 3.5rem;
+            }
+            h2.subtitle {
+                font-size: 1rem;
+            }
+            .voting-container {
+                gap: 30px;
+            }
+            .candidate-card {
+                width: 100%;
+                max-width: 320px;
+            }
         }
 
-        .close-btn {
-            margin-top: 20px;
-            background: transparent;
-            border: none;
-            text-decoration: underline;
-            font-weight: bold;
-            cursor: pointer;
-            color: rgba(255,255,255, 0.7);
-            font-size: 0.9rem;
+        @media (max-width: 480px) {
+            h1.theme-title {
+                font-size: 2.8rem;
+                -webkit-text-stroke: 1.5px var(--border-color);
+            }
+            .voting-container {
+                padding: 10px;
+            }
+            .candidate-card {
+                padding: 20px;
+            }
+            .avatar-placeholder {
+                width: 80px;
+                height: 80px;
+                font-size: 2.5rem;
+            }
+            .candidate-name {
+                font-size: 1.8rem;
+            }
+            .modal-box {
+                padding: 20px;
+            }
+            .modal-box h3 {
+                font-size: 1.8rem;
+            }
         }
-        
-        .close-btn:hover {
-            color: white;
-        }
-        
-        /* Specific coloring for the two candidates */
+
+        /* Specific coloring */
         .btn-tanishq:hover { background-color: #ff6b6b; }
         .btn-vrishank:hover { background-color: #54a0ff; }
 
@@ -252,13 +289,13 @@
             
             <div id="roll-section">
                 <p style="font-weight: 600; font-size: 1.1rem;">Enter your Roll Number:</p>
-                <input type="text" id="rollInput" class="modal-input" placeholder="e.g.,5 or 11">
+                <input type="tel" id="rollInput" class="modal-input" placeholder="e.g. 5 or 11">
                 <button class="vote-btn" id="sendOtpBtn" style="background-color: var(--accent-yellow); color: black;">Send Verification OTP</button>
             </div>
 
-            <div id="otp-section">
+            <div id="otp-section" style="display: none;">
                 <p style="font-weight: 600; font-size: 1.1rem;">Check your phone & enter code:</p>
-                <input type="text" id="otpInput" class="modal-input" placeholder="6-digit Code">
+                <input type="tel" id="otpInput" class="modal-input" placeholder="6-digit Code">
                 <button class="vote-btn" style="background-color: var(--primary-orange);" id="verifyVoteBtn">Confirm Vote</button>
             </div>
 
@@ -272,9 +309,9 @@
 
     <script>
         // ============================================
-        // FIREBASE CONFIGURATION (REPLACE THIS!)
+        // FIREBASE CONFIGURATION
         // ============================================
-       const firebaseConfig = {
+         const firebaseConfig = {
   apiKey: "AIzaSyDGANXiPI0aXkmhmv7ua_VSvXGvxypg5E0",
   authDomain: "votingotp-ca85a.firebaseapp.com",
   databaseURL: "https://votingotp-ca85a-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -284,8 +321,8 @@
   appId: "1:750310067448:web:81c89f752fe2709dc77f0d",
   measurementId: "G-8B90FHKF5F"
 };
+        // NOTE: Please replace with your specific config keys before running!
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
@@ -293,18 +330,17 @@
         // DATA & LOGIC
         // ============================================
 
-        // HARDCODED CANDIDATES AS REQUESTED
         const candidates = [
             { 
                 id: 'tanishq', 
                 name: 'Tanishq', 
-                color: '#ff6b6b', // Orange-ish
+                color: '#ff6b6b', 
                 btnClass: 'btn-tanishq'
             },
             { 
                 id: 'vrishank', 
                 name: 'Vrishank', 
-                color: '#54a0ff', // Blue-ish
+                color: '#54a0ff', 
                 btnClass: 'btn-vrishank'
             }
         ];
@@ -313,7 +349,6 @@
         let currentRollNumber = null;
         let generatedMockOtp = null;
 
-        // --- Initialization ---
         document.addEventListener('DOMContentLoaded', () => {
             loadCandidates();
             setupEventListeners();
@@ -338,7 +373,6 @@
                 `;
                 container.appendChild(card);
 
-                // Listen for realtime vote updates
                 db.ref('candidates/' + cand.id + '/votes').on('value', (snapshot) => {
                     const count = snapshot.val() || 0;
                     document.getElementById(`count-${cand.id}`).innerText = `${count} Votes`;
@@ -346,7 +380,6 @@
             });
         }
 
-        // --- Modal Handling ---
         function openVotingModal(candidateId, candidateName) {
             selectedCandidateId = candidateId;
             document.getElementById('modalTitle').innerText = `Voting: ${candidateName}`;
@@ -365,31 +398,18 @@
             currentRollNumber = null;
         }
 
-
-        // --- Event Listeners ---
         function setupEventListeners() {
             document.getElementById('sendOtpBtn').addEventListener('click', handleSendOtp);
             document.getElementById('verifyVoteBtn').addEventListener('click', handleVerifyAndVote);
         }
 
-        // --- Logic: Send OTP (Simulated) ---
         // ============================================
-        // UPDATED: CHECK ELIGIBILITY BEFORE OTP
-        // ============================================
-        // ============================================
-        // UPDATED: CHECK VALIDITY (1-77) & ELIGIBILITY
-        // ============================================
-       // ============================================
-        // UPDATED: HANDLE SEND OTP (CONNECTS TO SERVER)
-        // ============================================
-       // ============================================
-        // UPDATED: FETCH PHONE ON CLIENT -> SEND TO SERVER
+        // FETCH PHONE ON CLIENT -> SEND TO SERVER
         // ============================================
         function handleSendOtp() {
             const rollInputStr = document.getElementById('rollInput').value.trim();
             const rollNum = parseInt(rollInputStr, 10);
 
-            // --- 1. VALIDATION ---
             if (!rollInputStr || isNaN(rollNum)) {
                 alert("Please enter a valid numeric Roll Number.");
                 return;
@@ -405,7 +425,7 @@
 
             currentRollNumber = rollNum.toString();
 
-            // --- 2. CHECK VOTING STATUS FIRST ---
+            // 1. CHECK VOTING STATUS FIRST
             db.ref('users/' + currentRollNumber).once('value')
                 .then((userSnap) => {
                     const userData = userSnap.val();
@@ -423,17 +443,16 @@
                         }
                     }
 
-                    // --- 3. STATUS OK? NOW FETCH PHONE NUMBER ---
+                    // 2. FETCH PHONE NUMBER
                     return db.ref('student_directory/' + currentRollNumber).once('value');
                 })
                 .then((phoneSnap) => {
-                    // This block runs if eligibility check passed
-                    if (!phoneSnap) return; // Logic handled above if blocked
+                    if (!phoneSnap) return; // Means logic blocked above
 
                     const retrievedPhone = phoneSnap.val();
 
                     if (!retrievedPhone) {
-                        alert("❌ Error: Phone number not found for this Roll Number.\nPlease contact Admin to register.");
+                        alert("❌ Error: Phone number not found for this Roll Number.\nPlease contact Admin.");
                         resetSendBtn();
                         return;
                     }
@@ -441,14 +460,14 @@
                     console.log("Found Phone:", retrievedPhone);
                     sendBtn.innerText = "Sending SMS...";
 
-                    // --- 4. GENERATE OTP & SEND TO SERVER ---
+                    // 3. GENERATE OTP & SEND TO SERVER
                     generatedMockOtp = Math.floor(100000 + Math.random() * 900000).toString();
 
                     fetch('https://backend-vote-otp.vercel.app/send-otp', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            phoneNumber: retrievedPhone, // PASSING PHONE DIRECTLY
+                            phoneNumber: retrievedPhone,
                             otp: generatedMockOtp
                         })
                     })
@@ -471,10 +490,10 @@
 
                 })
                 .catch((error) => {
-                    console.error("Firebase/Logic Error:", error);
-                    // Don't alert if we already handled the stop logic
-                    if(sendBtn.innerText === "Checking...") {
-                        alert("An unexpected error occurred.");
+                    console.error("Error:", error);
+                    // Avoid double alert if button reset logic handled it
+                    if (sendBtn.innerText === "Checking...") {
+                         alert("An unexpected error occurred.");
                     }
                     resetSendBtn();
                 });
@@ -486,93 +505,66 @@
         }
 
 
-        // --- Logic: Verify & Vote ---
-        // --- Logic: Verify & Vote ---
         // ============================================
-        // UPDATED: VERIFY OTP & EXECUTE VOTE
+        // VERIFY OTP & EXECUTE VOTE
         // ============================================
         function handleVerifyAndVote() {
             const enteredOtp = document.getElementById('otpInput').value.trim();
             const verifyBtn = document.getElementById('verifyVoteBtn');
 
-            // 1. CHECK IF OTP MATCHES
             if (enteredOtp !== generatedMockOtp) {
-                alert("❌ Invalid OTP. Please check your SMS and try again.");
+                alert("❌ Invalid OTP. Please try again.");
                 return;
             }
 
-            // UI Feedback
-            verifyBtn.innerText = "Verifying & Voting...";
+            verifyBtn.innerText = "Verifying...";
             verifyBtn.disabled = true;
 
-            // 2. FIREBASE TRANSACTION (THE VOTING LOGIC)
             const userRef = db.ref('users/' + currentRollNumber);
             const candidateRef = db.ref('candidates/' + selectedCandidateId + '/votes');
 
             userRef.transaction((userData) => {
-                // --- TRANSACTION LOGIC ---
                 if (userData === null) {
-                    // Case A: First time voter. Allow.
                     return { hasVoted: true, votedForId: selectedCandidateId, hasChangedVote: false };
                 } 
                 else if (userData.hasVoted && !userData.hasChangedVote) {
-                    // Case B: Voted once, wants to change. Allow.
-                    if (userData.votedForId === selectedCandidateId) {
-                        return; // Same candidate, cancel transaction (handled in completion callback)
-                    }
-                    // Mark as changed, store old ID to decrement it later
+                    if (userData.votedForId === selectedCandidateId) return;
                     userData.hasChangedVote = true;
                     userData.previousVoteId = userData.votedForId; 
                     userData.votedForId = selectedCandidateId;
                     return userData;
                 } 
                 else {
-                    // Case C: Already changed vote once. Block.
-                    return undefined; // Abort transaction
+                    return undefined; 
                 }
             }, (error, committed, snapshot) => {
-                // --- TRANSACTION COMPLETION CALLBACK ---
-                
-                // Reset Button
                 verifyBtn.innerText = "Confirm Vote";
                 verifyBtn.disabled = false;
 
                 if (error) {
-                    // Database Error
-                    console.error("Transaction Error:", error);
-                    alert("Error processing vote: " + error.message);
+                    alert("Error: " + error.message);
                     closeModal();
                 } 
                 else if (!committed) {
-                    // Transaction Aborted (Case C or Voting for same person)
                     const data = snapshot.val();
                     if (data && data.votedForId === selectedCandidateId) {
                          alert("⚠️ You have already voted for this candidate!");
                     } else {
-                         alert("⛔ Vote Limit Reached: You have already used your 1 vote change.");
+                         alert("⛔ Vote Limit Reached.");
                     }
                     closeModal();
                 } 
                 else {
-                    // Transaction Successful (Vote Counted!)
                     const userData = snapshot.val();
-                    
                     if (userData.hasChangedVote && userData.previousVoteId) {
-                        // SWAP VOTE: Decrement Old, Increment New
                         db.ref('candidates/' + userData.previousVoteId + '/votes').set(firebase.database.ServerValue.increment(-1));
                         candidateRef.set(firebase.database.ServerValue.increment(1));
-                        
-                        alert("✅ Vote Successfully Switched!");
-                        
-                        // Clean up temp data
+                        alert("✅ Vote Switched!");
                         userRef.child('previousVoteId').remove();
                     } else {
-                        // NEW VOTE: Increment New
                         candidateRef.set(firebase.database.ServerValue.increment(1));
-                        alert("✅ Vote Registered Successfully!");
+                        alert("✅ Vote Registered!");
                     }
-                    
-                    // Close the modal
                     closeModal();
                 }
             });
