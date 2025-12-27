@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KÖMIKOS - Admin HQ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Public+Sans:wght@500;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #1a1a2e;
+            --primary-orange: #ff6b6b;
+            --accent-yellow: #feca57;
+            --accent-blue: #54a0ff;
+            --accent-green: #2ecc71;
+            --danger-red: #eb4d4b;
+            --border-color: #000000;
+            --hard-shadow: 5px 5px 0px #000000;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Public Sans', sans-serif;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(#ffffff 15%, transparent 16%), radial-gradient(#ffffff 15%, transparent 16%);
+            background-size: 30px 30px;
+            background-blend-mode: overlay;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-family: 'Bangers', cursive;
+            font-size: 3.5rem;
+            color: var(--accent-yellow);
+            -webkit-text-stroke: 1.5px black;
+            text-shadow: 4px 4px 0px var(--primary-orange);
+            margin-bottom: 30px;
+            text-align: center;
+            line-height: 1.1;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            max-width: 1400px;
+            width: 100%;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        /* --- SECTION STYLES --- */
+        .panel {
+            background: #2d2d44;
+            border: 3px solid white;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            border-radius: 15px;
+            padding: 25px;
+            flex: 1;
+            /* Responsive Min Width */
+            min-width: 320px;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .panel-title {
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            color: var(--accent-blue);
+            border-bottom: 2px dashed rgba(255,255,255,0.2);
+            padding-bottom: 10px;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        /* --- RESULTS SECTION --- */
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.1);
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+        }
+        
+        .cand-name { font-size: 1.5rem; font-weight: bold; }
+        .vote-pill {
+            background: var(--primary-orange);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 1.2rem;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        /* --- RESET BUTTON --- */
+        .reset-btn {
+            background: var(--danger-red);
+            color: white;
+            margin-top: 30px;
+            font-size: 1rem !important;
+            border-color: white !important;
+        }
+        .reset-btn:hover { background-color: #ff0000; }
+
+        /* --- FORM ELEMENTS --- */
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: var(--accent-yellow); }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 3px solid black;
+            border-radius: 8px;
+            font-family: 'Public Sans', sans-serif;
+            font-weight: bold;
+            font-size: 1rem;
+            box-sizing: border-box; /* Crucial for responsive width */
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: var(--accent-green);
+            color: black;
+            font-family: 'Bangers', cursive;
+            font-size: 1.5rem;
+            border: 3px solid black;
+            box-shadow: var(--hard-shadow);
+            cursor: pointer;
+            transition: transform 0.1s;
+            white-space: normal; /* Allow text wrapping */
+            line-height: 1.2;
+        }
+        
+        button:active { transform: translate(3px, 3px); box-shadow: 0 0 0; }
+
+        /* --- DIRECTORY LIST --- */
+        .directory-list {
+            max-height: 400px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.3);
+            border: 2px solid #555;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .directory-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-family: monospace;
+            font-size: 1.1rem;
+            flex-wrap: wrap; /* Allow wrapping on tiny screens */
+            gap: 10px;
+        }
+        
+        .directory-item:last-child { border-bottom: none; }
+        .roll-tag { color: var(--accent-yellow); font-weight: bold; }
+        .phone-tag { color: var(--accent-blue); }
+
+        /* --- MOBILE MEDIA QUERIES --- */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.8rem; /* Smaller Title */
+                margin-bottom: 20px;
+            }
+            
+            .container {
+                gap: 20px;
+            }
+
+            .panel {
+                min-width: 100%; /* Full width on tablet/mobile */
+                padding: 20px;
+            }
+
+            .panel-title {
+                font-size: 1.8rem;
+            }
+
+            .cand-name {
+                font-size: 1.3rem;
+            }
+
+            button {
+                font-size: 1.3rem;
+                padding: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+                -webkit-text-stroke: 1px black;
+            }
+
+            .cand-name {
+                font-size: 1.1rem;
+            }
+            
+            .vote-pill {
+                font-size: 1rem;
+                padding: 4px 10px;
+            }
+
+            .directory-item {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>ADMIN HQ</h1>
+
+    <div class="container">
+        
+        <div class="panel">
+            <h2 class="panel-title">🏆 Live Standings</h2>
+            <div id="results-container">Loading...</div>
+            <div style="margin-top:20px; text-align:center; opacity: 0.7;">
+                Total Votes: <span id="total-votes">0</span>
+            </div>
+
+            <hr style="border-color: rgba(255,255,255,0.2); margin: 30px 0;">
+            
+            <h3 style="color: var(--danger-red); font-family: 'Bangers'; margin-top:0;">⚠️ DANGER ZONE</h3>
+            <p style="font-size: 0.9rem; color: #ccc;">Reset votes & clear voting history.</p>
+            <button class="reset-btn" onclick="resetAllVotes()">🔥 RESET ELECTION DATA 🔥</button>
+        </div>
+
+        <div class="panel">
+            <h2 class="panel-title">➕ Add Entry</h2>
+            <div class="form-group">
+                <label>Roll Number (1-77)</label>
+                <input type="tel" id="adminRoll" placeholder="e.g. 15">
+            </div>
+            <div class="form-group">
+                <label>Phone Number (with +91)</label>
+                <input type="tel" id="adminPhone" placeholder="+919876543210">
+            </div>
+            <button onclick="savePhoneNumber()">SAVE TO DB</button>
+            <p id="saveMsg" style="text-align:center; margin-top:10px; color: var(--accent-green); height: 20px; font-weight: bold;"></p>
+        </div>
+
+        <div class="panel">
+            <h2 class="panel-title">📞 Registered Directory</h2>
+            <p style="font-size: 0.9rem; margin-bottom: 10px; color: #ccc;">Live Database List:</p>
+            <div class="directory-list" id="directoryList">
+                <div style="text-align:center; padding: 20px; opacity:0.5;">Loading Directory...</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+    <script>
+        // ============================================
+        // FIREBASE CONFIG (REPLACE WITH YOUR KEYS)
+        // ============================================
+         const firebaseConfig = {
+  apiKey: "AIzaSyDGANXiPI0aXkmhmv7ua_VSvXGvxypg5E0",
+  authDomain: "votingotp-ca85a.firebaseapp.com",
+  databaseURL: "https://votingotp-ca85a-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "votingotp-ca85a",
+  storageBucket: "votingotp-ca85a.firebasestorage.app",
+  messagingSenderId: "750310067448",
+  appId: "1:750310067448:web:81c89f752fe2709dc77f0d",
+  measurementId: "G-8B90FHKF5F"
+};
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        const candidates = [
+            { id: 'tanishq', name: 'Tanishq' },
+            { id: 'vrishank', name: 'Vrishank' }
+        ];
+
+        // --- 1. INIT RESULTS ---
+        function initResults() {
+            const container = document.getElementById('results-container');
+            container.innerHTML = '';
+
+            candidates.forEach(cand => {
+                const row = document.createElement('div');
+                row.className = 'result-row';
+                row.innerHTML = `
+                    <div class="cand-name">${cand.name}</div>
+                    <div class="vote-pill" id="score-${cand.id}">0</div>
+                `;
+                container.appendChild(row);
+
+                db.ref(`candidates/${cand.id}/votes`).on('value', snap => {
+                    const count = snap.val() || 0;
+                    document.getElementById(`score-${cand.id}`).innerText = count;
+                    updateTotal();
+                });
+            });
+        }
+
+        function updateTotal() {
+            let sum = 0;
+            candidates.forEach(c => {
+                const val = parseInt(document.getElementById(`score-${c.id}`).innerText) || 0;
+                sum += val;
+            });
+            document.getElementById('total-votes').innerText = sum;
+        }
+
+        // --- 2. SAVE PHONE NUMBER ---
+        function savePhoneNumber() {
+            const roll = document.getElementById('adminRoll').value;
+            const phone = document.getElementById('adminPhone').value;
+            const msgBox = document.getElementById('saveMsg');
+
+            if (!roll || !phone) {
+                alert("Please fill both fields!");
+                return;
+            }
+
+            db.ref('student_directory/' + roll).set(phone)
+                .then(() => {
+                    msgBox.innerText = `✅ Saved: Roll ${roll}`;
+                    setTimeout(() => msgBox.innerText = "", 3000);
+                    document.getElementById('adminRoll').value = '';
+                    document.getElementById('adminPhone').value = '';
+                })
+                .catch(err => alert("Error: " + err.message));
+        }
+
+        // --- 3. LOAD DIRECTORY LIST ---
+        function loadDirectory() {
+            const listContainer = document.getElementById('directoryList');
+            
+            db.ref('student_directory').on('value', (snapshot) => {
+                listContainer.innerHTML = ''; 
+                
+                const data = snapshot.val();
+                
+                if (!data) {
+                    listContainer.innerHTML = '<div style="text-align:center; padding: 20px;">No numbers added yet.</div>';
+                    return;
+                }
+
+                // Sort numerically by Roll Number
+                Object.keys(data).sort((a,b) => a - b).forEach(key => {
+                    const phone = data[key];
+                    
+                    const item = document.createElement('div');
+                    item.className = 'directory-item';
+                    item.innerHTML = `
+                        <span class="roll-tag">Roll #${key}</span>
+                        <span class="phone-tag">${phone}</span>
+                    `;
+                    listContainer.appendChild(item);
+                });
+            });
+        }
+
+        // --- 4. RESET ELECTION DATA ---
+        function resetAllVotes() {
+            const confirmAction = confirm("🚨 ARE YOU SURE?\n\nThis will:\n1. Delete all votes.\n2. Delete all voting history.\n3. Allow students to vote again.\n\nType 'YES' to confirm.");
+            
+            if (confirmAction) {
+                const doubleCheck = confirm("Last Warning: This cannot be undone.");
+                
+                if (doubleCheck) {
+                    const updates = {};
+                    candidates.forEach(c => {
+                        updates[`candidates/${c.id}/votes`] = 0;
+                    });
+                    
+                    updates['users'] = null;
+
+                    db.ref().update(updates)
+                        .then(() => {
+                            alert("✅ Election has been reset!");
+                        })
+                        .catch((error) => {
+                            alert("❌ Error resetting data: " + error.message);
+                        });
+                }
+            }
+        }
+
+        // START APP
+        initResults();
+        loadDirectory();
+
+    </script>
+</body>
+</html>
