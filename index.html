@@ -36,8 +36,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow-x: hidden; /* Prevent horizontal scroll */
-            padding-bottom: 50px; /* Space for scrolling on mobile */
+            overflow-x: hidden;
+            padding-bottom: 50px;
         }
 
         /* --- Header Styles --- */
@@ -51,13 +51,14 @@
             box-shadow: var(--hard-shadow);
             transform: rotate(-2deg);
             z-index: 10;
-            max-width: 90%; /* Responsive width */
+            max-width: 90%;
             box-sizing: border-box;
+            position: relative;
         }
 
         h1.theme-title {
             font-family: 'Bangers', cursive;
-            font-size: 5rem; /* Desktop size */
+            font-size: 5rem;
             margin: 0;
             color: var(--accent-yellow);
             -webkit-text-stroke: 2px var(--border-color);
@@ -75,6 +76,28 @@
             color: white;
             text-shadow: 2px 2px 0px var(--border-color);
             font-size: 1.5rem;
+        }
+
+        /* --- NEW: TOTAL VOTES COUNTER --- */
+        .total-votes-badge {
+            margin-top: 20px;
+            background: white;
+            color: var(--text-card);
+            border: 3px solid var(--border-color);
+            box-shadow: 4px 4px 0px var(--border-color);
+            padding: 10px 30px;
+            border-radius: 50px;
+            font-family: 'Bangers', cursive;
+            font-size: 1.8rem;
+            transform: rotate(1deg);
+            z-index: 9;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(1deg); }
+            50% { transform: translateY(-5px) rotate(1deg); }
+            100% { transform: translateY(0px) rotate(1deg); }
         }
 
         /* --- Candidate Grid --- */
@@ -96,11 +119,11 @@
             box-shadow: var(--hard-shadow);
             border-radius: 12px;
             padding: 30px 20px;
-            width: 300px; /* Base width */
+            width: 300px;
             text-align: center;
             position: relative;
             transition: all 0.2s ease;
-            flex-shrink: 0; /* Prevent squishing */
+            flex-shrink: 0;
         }
 
         .candidate-card:hover {
@@ -129,20 +152,9 @@
             font-family: 'Bangers', cursive;
             font-size: 2.2rem;
             color: var(--text-card);
-            margin-bottom: 10px;
-            line-height: 1.1;
-            word-wrap: break-word; /* Prevent long names breaking layout */
-        }
-
-        .vote-count {
-            font-weight: 800;
-            background: var(--text-card);
-            color: white;
-            display: inline-block;
-            padding: 8px 20px;
-            border-radius: 20px;
             margin-bottom: 25px;
-            font-size: 1.1rem;
+            line-height: 1.1;
+            word-wrap: break-word;
         }
 
         .vote-btn {
@@ -158,7 +170,7 @@
             box-shadow: 4px 4px 0px var(--border-color);
             transition: all 0.1s;
             width: 100%;
-            white-space: normal; /* Allow text wrapping on button */
+            white-space: normal;
             line-height: 1.2;
         }
 
@@ -180,7 +192,7 @@
             justify-content: center;
             align-items: center;
             z-index: 100;
-            padding: 20px; /* Prevent touching edges on mobile */
+            padding: 20px;
             box-sizing: border-box;
         }
 
@@ -219,55 +231,46 @@
             font-weight: bold;
         }
 
-        /* --- MOBILE RESPONSIVENESS MEDIA QUERIES --- */
+        /* --- PROGRESS MODAL --- */
+        #progressModal .modal-box {
+            background: white;
+            color: black;
+            border-color: var(--accent-blue);
+            max-width: 300px;
+        }
+        
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--accent-blue);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- MOBILE MEDIA QUERIES --- */
         @media (max-width: 768px) {
-            .header-container {
-                margin-top: 30px;
-                padding: 15px 25px;
-            }
-            h1.theme-title {
-                font-size: 3.5rem;
-            }
-            h2.subtitle {
-                font-size: 1rem;
-            }
-            .voting-container {
-                gap: 30px;
-            }
-            .candidate-card {
-                width: 100%;
-                max-width: 320px;
-            }
+            .header-container { margin-top: 30px; padding: 15px 25px; }
+            h1.theme-title { font-size: 3.5rem; }
+            h2.subtitle { font-size: 1rem; }
+            .voting-container { gap: 30px; }
+            .candidate-card { width: 100%; max-width: 320px; }
         }
 
         @media (max-width: 480px) {
-            h1.theme-title {
-                font-size: 2.8rem;
-                -webkit-text-stroke: 1.5px var(--border-color);
-            }
-            .voting-container {
-                padding: 10px;
-            }
-            .candidate-card {
-                padding: 20px;
-            }
-            .avatar-placeholder {
-                width: 80px;
-                height: 80px;
-                font-size: 2.5rem;
-            }
-            .candidate-name {
-                font-size: 1.8rem;
-            }
-            .modal-box {
-                padding: 20px;
-            }
-            .modal-box h3 {
-                font-size: 1.8rem;
-            }
+            h1.theme-title { font-size: 2.8rem; -webkit-text-stroke: 1.5px var(--border-color); }
+            .voting-container { padding: 10px; }
+            .candidate-card { padding: 20px; }
+            .avatar-placeholder { width: 80px; height: 80px; font-size: 2.5rem; }
+            .candidate-name { font-size: 1.8rem; }
+            .modal-box { padding: 20px; }
+            .modal-box h3 { font-size: 1.8rem; }
+            .total-votes-badge { font-size: 1.4rem; padding: 8px 20px; }
         }
 
-        /* Specific coloring */
         .btn-tanishq:hover { background-color: #ff6b6b; }
         .btn-vrishank:hover { background-color: #54a0ff; }
 
@@ -278,6 +281,10 @@
     <div class="header-container">
         <h1 class="theme-title">KÖMIKOS</h1>
         <h2 class="subtitle">The Ultimate Showdown</h2>
+    </div>
+
+    <div class="total-votes-badge">
+        TOTAL VOTES: <span id="total-vote-count" style="color: var(--primary-orange);">0</span>
     </div>
 
     <div class="voting-container" id="candidate-container">
@@ -303,6 +310,14 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="progressModal" style="z-index: 200;">
+        <div class="modal-box">
+            <div class="spinner"></div>
+            <h3 style="color: black; font-size: 1.5rem; margin-bottom: 0;">Processing...</h3>
+            <p id="progressText" style="margin-top: 10px; font-weight: bold;">Please wait...</p>
+        </div>
+    </div>
+
 
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -311,7 +326,7 @@
         // ============================================
         // FIREBASE CONFIGURATION
         // ============================================
-         const firebaseConfig = {
+       const firebaseConfig = {
   apiKey: "AIzaSyDGANXiPI0aXkmhmv7ua_VSvXGvxypg5E0",
   authDomain: "votingotp-ca85a.firebaseapp.com",
   databaseURL: "https://votingotp-ca85a-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -326,23 +341,9 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // ============================================
-        // DATA & LOGIC
-        // ============================================
-
         const candidates = [
-            { 
-                id: 'tanishq', 
-                name: 'Tanishq', 
-                color: '#ff6b6b', 
-                btnClass: 'btn-tanishq'
-            },
-            { 
-                id: 'vrishank', 
-                name: 'Vrishank', 
-                color: '#54a0ff', 
-                btnClass: 'btn-vrishank'
-            }
+            { id: 'tanishq', name: 'Tanishq', color: '#ff6b6b', btnClass: 'btn-tanishq' },
+            { id: 'vrishank', name: 'Vrishank', color: '#54a0ff', btnClass: 'btn-vrishank' }
         ];
 
         let selectedCandidateId = null;
@@ -351,8 +352,29 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             loadCandidates();
+            setupTotalVoteListener(); // <--- NEW: LISTENER FOR TOTAL
             setupEventListeners();
         });
+
+        // --- NEW: LISTEN TO ALL VOTES AND SUM THEM UP ---
+        function setupTotalVoteListener() {
+            // Listen to the 'candidates' node
+            db.ref('candidates').on('value', (snapshot) => {
+                const data = snapshot.val();
+                let total = 0;
+                
+                if (data) {
+                    // Loop through all keys (candidates) and sum their 'votes'
+                    Object.values(data).forEach(candidateData => {
+                        total += (candidateData.votes || 0);
+                    });
+                }
+                
+                // Update the UI
+                const counterElement = document.getElementById('total-vote-count');
+                counterElement.innerText = total;
+            });
+        }
 
         function loadCandidates() {
             const container = document.getElementById('candidate-container');
@@ -368,15 +390,9 @@
                         ${initial}
                     </div>
                     <div class="candidate-name">${cand.name}</div>
-                    <div class="vote-count" id="count-${cand.id}">Votes: ...</div>
                     <button class="vote-btn ${cand.btnClass}" onclick="openVotingModal('${cand.id}', '${cand.name}')">VOTE FOR ${cand.name.toUpperCase()}</button>
                 `;
                 container.appendChild(card);
-
-                db.ref('candidates/' + cand.id + '/votes').on('value', (snapshot) => {
-                    const count = snapshot.val() || 0;
-                    document.getElementById(`count-${cand.id}`).innerText = `${count} Votes`;
-                });
             });
         }
 
@@ -398,14 +414,21 @@
             currentRollNumber = null;
         }
 
+        function showProgress(message) {
+            document.getElementById('progressText').innerText = message;
+            document.getElementById('progressModal').style.display = 'flex';
+        }
+
+        function hideProgress() {
+            document.getElementById('progressModal').style.display = 'none';
+        }
+
         function setupEventListeners() {
             document.getElementById('sendOtpBtn').addEventListener('click', handleSendOtp);
             document.getElementById('verifyVoteBtn').addEventListener('click', handleVerifyAndVote);
         }
 
-        // ============================================
-        // FETCH PHONE ON CLIENT -> SEND TO SERVER
-        // ============================================
+        // --- HANDLE SEND OTP ---
         function handleSendOtp() {
             const rollInputStr = document.getElementById('rollInput').value.trim();
             const rollNum = parseInt(rollInputStr, 10);
@@ -419,48 +442,33 @@
                 return;
             }
 
-            const sendBtn = document.getElementById('sendOtpBtn');
-            sendBtn.disabled = true;
-            sendBtn.innerText = "Checking...";
-
+            showProgress("Checking Eligibility...");
             currentRollNumber = rollNum.toString();
 
-            // 1. CHECK VOTING STATUS FIRST
             db.ref('users/' + currentRollNumber).once('value')
                 .then((userSnap) => {
                     const userData = userSnap.val();
 
                     if (userData) {
-                        if (userData.hasChangedVote === true) {
-                            alert("⛔ You have already used your one-time vote change.");
-                            resetSendBtn();
-                            return;
-                        }
-                        if (userData.votedForId === selectedCandidateId) {
-                            alert("⚠️ You have already voted for this candidate!");
-                            resetSendBtn();
-                            return;
-                        }
+                        hideProgress();
+                        alert("⛔ You have already voted! Multiple votes are not allowed.");
+                        return;
                     }
-
-                    // 2. FETCH PHONE NUMBER
                     return db.ref('student_directory/' + currentRollNumber).once('value');
                 })
                 .then((phoneSnap) => {
-                    if (!phoneSnap) return; // Means logic blocked above
+                    if (!phoneSnap) return;
 
                     const retrievedPhone = phoneSnap.val();
-
                     if (!retrievedPhone) {
+                        hideProgress();
                         alert("❌ Error: Phone number not found for this Roll Number.\nPlease contact Admin.");
-                        resetSendBtn();
                         return;
                     }
 
                     console.log("Found Phone:", retrievedPhone);
-                    sendBtn.innerText = "Sending SMS...";
+                    showProgress("Sending SMS Code...");
 
-                    // 3. GENERATE OTP & SEND TO SERVER
                     generatedMockOtp = Math.floor(100000 + Math.random() * 900000).toString();
 
                     fetch('https://backend-vote-otp.vercel.app/send-otp', {
@@ -473,6 +481,7 @@
                     })
                     .then(response => response.json())
                     .then(data => {
+                        hideProgress();
                         if (data.success) {
                             alert("✅ OTP Sent to registered mobile!");
                             document.getElementById('roll-section').style.display = 'none';
@@ -480,91 +489,59 @@
                         } else {
                             alert("❌ SMS Error: " + data.message);
                         }
-                        resetSendBtn();
                     })
                     .catch(err => {
+                        hideProgress();
                         console.error(err);
                         alert("❌ Server Error. Is 'node server.js' running?");
-                        resetSendBtn();
                     });
-
                 })
                 .catch((error) => {
+                    hideProgress();
                     console.error("Error:", error);
-                    // Avoid double alert if button reset logic handled it
-                    if (sendBtn.innerText === "Checking...") {
-                         alert("An unexpected error occurred.");
-                    }
-                    resetSendBtn();
+                    alert("An unexpected error occurred.");
                 });
-
-            function resetSendBtn() {
-                sendBtn.disabled = false;
-                sendBtn.innerText = "Send Verification OTP";
-            }
         }
 
 
-        // ============================================
-        // VERIFY OTP & EXECUTE VOTE
-        // ============================================
+        // --- VERIFY OTP & EXECUTE VOTE (STRICT 1-TIME) ---
         function handleVerifyAndVote() {
             const enteredOtp = document.getElementById('otpInput').value.trim();
-            const verifyBtn = document.getElementById('verifyVoteBtn');
 
             if (enteredOtp !== generatedMockOtp) {
                 alert("❌ Invalid OTP. Please try again.");
                 return;
             }
 
-            verifyBtn.innerText = "Verifying...";
-            verifyBtn.disabled = true;
+            showProgress("Verifying & Casting Vote...");
 
             const userRef = db.ref('users/' + currentRollNumber);
             const candidateRef = db.ref('candidates/' + selectedCandidateId + '/votes');
 
             userRef.transaction((userData) => {
                 if (userData === null) {
-                    return { hasVoted: true, votedForId: selectedCandidateId, hasChangedVote: false };
-                } 
-                else if (userData.hasVoted && !userData.hasChangedVote) {
-                    if (userData.votedForId === selectedCandidateId) return;
-                    userData.hasChangedVote = true;
-                    userData.previousVoteId = userData.votedForId; 
-                    userData.votedForId = selectedCandidateId;
-                    return userData;
-                } 
-                else {
+                    return { 
+                        hasVoted: true, 
+                        votedForId: selectedCandidateId,
+                        timestamp: firebase.database.ServerValue.TIMESTAMP 
+                    };
+                } else {
                     return undefined; 
                 }
             }, (error, committed, snapshot) => {
-                verifyBtn.innerText = "Confirm Vote";
-                verifyBtn.disabled = false;
+                hideProgress();
 
                 if (error) {
                     alert("Error: " + error.message);
                     closeModal();
                 } 
                 else if (!committed) {
-                    const data = snapshot.val();
-                    if (data && data.votedForId === selectedCandidateId) {
-                         alert("⚠️ You have already voted for this candidate!");
-                    } else {
-                         alert("⛔ Vote Limit Reached.");
-                    }
+                    alert("⛔ You have already cast your vote.");
                     closeModal();
                 } 
                 else {
-                    const userData = snapshot.val();
-                    if (userData.hasChangedVote && userData.previousVoteId) {
-                        db.ref('candidates/' + userData.previousVoteId + '/votes').set(firebase.database.ServerValue.increment(-1));
-                        candidateRef.set(firebase.database.ServerValue.increment(1));
-                        alert("✅ Vote Switched!");
-                        userRef.child('previousVoteId').remove();
-                    } else {
-                        candidateRef.set(firebase.database.ServerValue.increment(1));
-                        alert("✅ Vote Registered!");
-                    }
+                    candidateRef.set(firebase.database.ServerValue.increment(1));
+                    alert("✅ Vote Registered Successfully!");
                     closeModal();
                 }
             });
